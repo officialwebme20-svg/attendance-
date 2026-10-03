@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#168a61">
+  <title>Attendance</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <section id="authView" class="auth-view">
+      <div class="auth-card">
+        <div class="brand-mark">✓</div>
+        <h1>Attendance</h1>
+        <p class="muted">Simple, private attendance tracking.</p>
+
+        <div class="auth-tabs" role="tablist" aria-label="Account access">
+          <button id="loginTab" class="auth-tab active" type="button">Log in</button>
+          <button id="signupTab" class="auth-tab" type="button">Sign up</button>
+        </div>
+
+        <div id="loginPanel" class="auth-panel">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" autocomplete="username" maxlength="30">
+          <label for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input id="loginPassword" type="password" autocomplete="current-password">
+            <button class="icon-btn password-toggle" type="button" data-target="loginPassword" aria-label="Show password">Show</button>
+          </div>
+          <button id="loginBtn" class="primary wide" type="button">Log in</button>
+          <p id="loginMessage" class="message" aria-live="polite"></p>
+        </div>
+
+        <div id="signupPanel" class="auth-panel hidden">
+          <label for="signupUsername">Username</label>
+          <input id="signupUsername" maxlength="30" autocomplete="username">
+          <label for="signupPassword">Password</label>
+          <div class="password-wrap">
+            <input id="signupPassword" type="password" autocomplete="new-password">
+            <button class="icon-btn password-toggle" type="button" data-target="signupPassword" aria-label="Show password">Show</button>
+          </div>
+          <label for="signupPassword2">Type password again</label>
+          <div class="password-wrap">
+            <input id="signupPassword2" type="password" autocomplete="new-password">
+            <button class="icon-btn password-toggle" type="button" data-target="signupPassword2" aria-label="Show password">Show</button>
+          </div>
+          <button id="signupBtn" class="primary wide" type="button">Create account</button>
+          <p class="hint">Remember your password. It cannot be recovered.</p>
+          <p id="signupMessage" class="message" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="mainView" class="hidden">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="app-title"><span class="brand-mark small">✓</span><span>Attendance</span></div>
+          <div class="account-area"><span id="topUsername"></span><button id="logoutBtn" class="ghost">Log out</button></div>
+        </div>
+      </header>
+
+      <main class="shell">
+        <nav class="tabs" aria-label="Main navigation">
+          <button class="nav-tab active" data-page="attendance">Attendance</button>
+          <button class="nav-tab" data-page="people">People</button>
+          <button class="nav-tab" data-page="history">History</button>
+          <button class="nav-tab" data-page="settings">Settings</button>
+        </nav>
+
+        <section id="attendancePage" class="page">
+          <div class="page-head">
+            <div>
+              <h2>Take attendance</h2>
+              <p class="muted">Mark people present or absent for any date.</p>
+            </div>
+            <span id="saveIndicator" class="save-indicator">Saved</span>
+          </div>
+
+          <div class="date-toolbar card">
+            <button id="prevDayBtn" class="secondary" type="button">← Previous day</button>
+            <div class="date-center">
+              <label for="attendanceDate">Attendance date</label>
+              <input id="attendanceDate" type="date">
+              <button id="todayBtn" class="text-btn" type="button">Today</button>
+            </div>
+            <button id="nextDayBtn" class="secondary" type="button">Next day →</button>
+          </div>
+
+          <div id="attendanceSummary" class="summary-grid"></div>
+
+          <div class="attendance-actions card">
+            <div class="search-row">
+              <label class="search-box" aria-label="Search people">
+                <span>⌕</span>
+                <input id="attendanceSearch" placeholder="Search people..." maxlength="30">
+              </label>
+              <div class="filter-group" role="group" aria-label="Attendance filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="present">Present</button>
+                <button class="filter-btn" data-filter="absent">Absent</button>
+              </div>
+            </div>
+            <div class="bulk-actions">
+              <button id="markAllBtn" class="secondary" type="button">✓ Mark all present</button>
+              <button id="clearAllBtn" class="secondary danger-outline" type="button">Clear all</button>
+            </div>
+            <div id="recordStatus" class="record-status"></div>
+          </div>
+
+          <div id="attendanceList" class="person-list"></div>
+          <div id="attendanceEmpty" class="empty card hidden"></div>
+
+          <div class="undo-bar card">
+            <div><strong>Undo</strong><span id="undoText" class="muted">No actions to undo.</span></div>
+            <button id="undoBtn" class="secondary" type="button" disabled>Undo</button>
+          </div>
+        </section>
+
+        <section id="peoplePage" class="page hidden">
+          <div class="page-head">
+            <div><h2>People</h2><p class="muted">Manage the people who appear in attendance.</p></div>
+          </div>
+          <div class="card add-person">
+            <label for="personName">Person's name</label>
+            <div class="inline-input">
+              <input id="personName" maxlength="80" placeholder="e.g. Ada Okafor">
+              <button id="addPersonBtn" class="primary" type="button">Add</button>
+            </div>
+            <button id="bulkToggleBtn" class="text-btn" type="button">+ Bulk add names</button>
+            <div id="bulkBox" class="hidden">
+              <label for="bulkNames">One name per line</label>
+              <textarea id="bulkNames" rows="6" maxlength="5000" placeholder="Ada Okafor&#10;David James&#10;Mariam Yusuf"></textarea>
+              <div class="bulk-actions"><button id="bulkAddBtn" class="primary" type="button">Add names</button></div>
+            </div>
+          </div>
+          <div id="peopleList" class="person-list"></div>
+          <div id="peopleEmpty" class="empty card hidden">
+            <div class="empty-icon">＋</div><h3>No people yet</h3><p>Add a person above to start taking attendance.</p>
+          </div>
+        </section>
+
+        <section id="historyPage" class="page hidden">
+          <div class="page-head">
+            <div><h2>History & insights</h2><p class="muted">Review attendance patterns and individual records.</p></div>
+          </div>
+          <div class="card range-controls">
+            <div><label for="historyStart">From</label><input id="historyStart" type="date"></div>
+            <div><label for="historyEnd">To</label><input id="historyEnd" type="date"></div>
+            <button id="historyThisMonthBtn" class="secondary" type="button">This month</button>
+          </div>
+          <div id="historyPeople" class="history-grid"></div>
+          <div class="card chart-card">
+            <div class="section-title"><div><h3>Daily attendance</h3><p class="muted">Last 30 recorded days in the selected range.</p></div></div>
+            <canvas id="attendanceChart" height="240" aria-label="Daily attendance percentage chart"></canvas>
+            <p id="chartEmpty" class="empty-inline hidden">Record attendance on a few dates to see the chart.</p>
+          </div>
+          <div class="card calendar-card">
+            <div class="calendar-head"><button id="calendarPrev" class="icon-btn" type="button" aria-label="Previous month">‹</button><h3 id="calendarTitle"></h3><button id="calendarNext" class="icon-btn" type="button" aria-label="Next month">›</button></div>
+            <div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+          <div id="weekdayHints" class="card hints-card"></div>
+        </section>
+
+        <section id="settingsPage" class="page hidden">
+          <div class="page-head"><div><h2>Settings</h2><p class="muted">Account, reports, data and appearance.</p></div></div>
+          <div class="settings-grid">
+            <div class="card setting-card">
+              <h3>Report & threshold</h3>
+              <label for="reportTitle">Report title</label>
+              <input id="reportTitle" maxlength="80">
+              <label for="threshold">Highlight people below (%)</label>
+              <input id="threshold" type="number" min="0" max="100" step="1">
+              <button id="saveSettingsBtn" class="primary" type="button">Save settings</button>
+            </div>
+            <div class="card setting-card">
+              <h3>Appearance</h3>
+              <p class="muted">Automatic follows your device. Manual choices are remembered.</p>
+              <div class="theme-buttons">
+                <button class="theme-btn" data-theme="auto">Auto</button>
+                <button class="theme-btn" data-theme="light">Light</button>
+                <button class="theme-btn" data-theme="dark">Dark</button>
+              </div>
+            </div>
+            <div class="card setting-card">
+              <h3>PDF report</h3>
+              <p class="muted">Create a clean A4 report for one date, a date range, or this month.</p>
+              <div class="report-choice">
+                <button class="report-type active" data-report-type="single">Single date</button>
+                <button class="report-type" data-report-type="range">Date range</button>
+                <button class="report-type" data-report-type="month">This month</button>
+              </div>
+              <div id="singleReportBox"><label for="pdfSingleDate">Date</label><input id="pdfSingleDate" type="date"></div>
+              <div id="rangeReportBox" class="hidden report-range"><div><label for="pdfStart">From</label><input id="pdfStart" type="date"></div><div><label for="pdfEnd">To</label><input id="pdfEnd" type="date"></div></div>
+              <button id="downloadPdfBtn" class="primary wide" type="button">Download PDF</button>
+              <button id="printReportBtn" class="secondary wide" type="button">Print as fallback</button>
+              <p id="pdfMessage" class="message" aria-live="polite"></p>
+            </div>
+            <div class="card setting-card">
+              <h3>Backup & export</h3>
+              <p class="muted">Keep a copy of your data or move it to another browser/device.</p>
+              <div class="button-stack">
+                <button id="exportBackupBtn" class="secondary wide" type="button">Export JSON backup</button>
+                <label class="file-btn secondary wide">Import JSON backup<input id="importBackupInput" type="file" accept=".json,application/json"></label>
+                <button id="exportCsvBtn" class="secondary wide" type="button">Export CSV</button>
+              </div>
+              <p id="backupMessage" class="message" aria-live="polite"></p>
+            </div>
+            <div class="card setting-card">
+              <h3>Change password</h3>
+              <label for="currentPassword">Current password</label><div class="password-wrap"><input id="currentPassword" type="password"><button class="icon-btn password-toggle" data-target="currentPassword" type="button">Show</button></div>
+              <label for="newPassword">New password</label><div class="password-wrap"><input id="newPassword" type="password"><button class="icon-btn password-toggle" data-target="newPassword" type="button">Show</button></div>
+              <label for="newPassword2">Type new password again</label><div class="password-wrap"><input id="newPassword2" type="password"><button class="icon-btn password-toggle" data-target="newPassword2" type="button">Show</button></div>
+              <button id="changePasswordBtn" class="primary" type="button">Change password</button>
+              <p id="passwordMessage" class="message" aria-live="polite"></p>
+            </div>
+            <div class="card setting-card danger-card">
+              <h3>Delete account</h3>
+              <p class="muted">This permanently removes this account, its people and attendance from this browser.</p>
+              <label for="deletePassword">Password</label><div class="password-wrap"><input id="deletePassword" type="password"><button class="icon-btn password-toggle" data-target="deletePassword" type="button">Show</button></div>
+              <button id="deleteAccountBtn" class="danger wide" type="button">Delete account</button>
+              <div id="deleteConfirm" class="confirm-inline hidden"><strong>Delete everything?</strong><p>This cannot be undone. Click Delete again to confirm.</p><button id="deleteConfirmBtn" class="danger" type="button">Yes, delete my account</button><button id="deleteCancelBtn" class="secondary" type="button">Cancel</button></div>
+            </div>
+            <div class="card setting-card">
+              <h3>Privacy</h3>
+              <p>Data is stored only in this browser on this device. Clearing browser data will delete it.</p>
+              <p class="muted small">A backup reminder appears every 14 days.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </section>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-card">
+        <h3 id="modalTitle"></h3><p id="modalText"></p>
+        <div id="modalOptions" class="modal-options"></div>
+        <div class="modal-actions"><button id="modalCancel" class="secondary" type="button">Cancel</button><button id="modalConfirm" class="danger" type="button">Confirm</button></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
